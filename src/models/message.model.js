@@ -12,10 +12,13 @@ const messageSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    text: {
+    encryptedMessage: {
       type: String,
     },
-    image: {
+    encryptedAESKeySender: {
+      type: String,
+    },
+    encryptedAESKeyReceiver: {
       type: String,
     },
   },

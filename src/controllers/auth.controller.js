@@ -4,14 +4,16 @@ import bcrypt from "bcryptjs";
 import cloudinary from "../lib/cloudinary.js";
 
 export const signup = async (req, res) => {
-  const { fullName, email, password } = req.body;
+  const { fullName, email, password, publicKey } = req.body;
   try {
-    if (!fullName || !email || !password) {
+    if (!fullName || !email || !password || !publicKey) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
     if (password.length < 6) {
-      return res.status(400).json({ message: "Password must be at least 6 characters" });
+      return res
+        .status(400)
+        .json({ message: "Password must be at least 6 characters" });
     }
 
     const user = await User.findOne({ email });
@@ -25,6 +27,7 @@ export const signup = async (req, res) => {
       fullName,
       email,
       password: hashedPassword,
+      publicKey,
     });
 
     if (newUser) {
@@ -68,6 +71,7 @@ export const login = async (req, res) => {
       fullName: user.fullName,
       email: user.email,
       profilePic: user.profilePic,
+      publicKey: user.publicKey,
     });
   } catch (error) {
     console.log("Error in login controller", error.message);
@@ -111,6 +115,19 @@ export const updateProfile = async (req, res) => {
 export const checkAuth = (req, res) => {
   try {
     res.status(200).json(req.user);
+  } catch (error) {
+    console.log("Error in checkAuth controller", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const getPublicKey = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findOne({ _id: userId }).select("publicKey");
+
+    res.status(200).json({ publicKey: user.publicKey });
   } catch (error) {
     console.log("Error in checkAuth controller", error.message);
     res.status(500).json({ message: "Internal Server Error" });
