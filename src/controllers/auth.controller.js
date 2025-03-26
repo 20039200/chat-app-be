@@ -4,30 +4,41 @@ import bcrypt from "bcryptjs";
 import cloudinary from "../lib/cloudinary.js";
 
 export const signup = async (req, res) => {
-  const { fullName, email, password, publicKey } = req.body;
+  const { fullName, email, publicKey, profilePic } = req.body;
   try {
-    if (!fullName || !email || !password || !publicKey) {
+    if (!fullName || !email) {
       return res.status(400).json({ message: "All fields are required" });
-    }
-
-    if (password.length < 6) {
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 6 characters" });
     }
 
     const user = await User.findOne({ email });
 
-    if (user) return res.status(400).json({ message: "Email already exists" });
+    console.log({user})
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    if (user) {
+         // generate jwt token here
+         generateToken(user._id, res);
+        //  await newUser.save();
+   
+         return res.status(201).json({
+           _id: user._id,
+           fullName: user.fullName,
+           email: user.email,
+           profilePic: user.profilePic,
+         });
+    }
+
+    // const salt = await bcrypt.genSalt(10);
+    // const hashedPassword = await bcrypt.hash(password, salt);
+
+    if (!publicKey) {
+      return res.status(400).json({ message: "Public key is required" });
+    }
 
     const newUser = new User({
       fullName,
       email,
-      password: hashedPassword,
       publicKey,
+      profilePic
     });
 
     if (newUser) {
