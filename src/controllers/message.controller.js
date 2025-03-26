@@ -37,7 +37,6 @@ export const getMessages = async (req, res) => {
 
 export const sendMessage = async (req, res) => {
   try {
-    console.log("in")
     const { encryptedMessage, encryptedAESKeySender, encryptedAESKeyReceiver } = req.body;
     const { id: receiverId } = req.params;
     const senderId = req.user._id;
@@ -68,6 +67,18 @@ export const sendMessage = async (req, res) => {
     res.status(201).json(newMessage);
   } catch (error) {
     console.log("Error in sendMessage controller: ", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const getTest = async (req, res) => {
+  try {
+    res.status(200).json({
+      name: "Chamara",
+      age: 31
+    });
+  } catch (error) {
+    console.log("Error in getMessages controller: ", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };
