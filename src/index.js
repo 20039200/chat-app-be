@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://chat-app-fe-gold.vercel.app"],
+    origin: ["http://localhost:5173", "https://chat-app-fe-srme.onrender.com"],
     credentials: true,
   })
 );
