@@ -13,17 +13,16 @@ export const googleSignInUp = async (req, res) => {
 
     if (user) {
       // generate jwt token here
-      generateToken(user._id, res);
+      const jwt = generateToken(user._id, res);
       const pubKey = await getPublicKey(user._id);
-
-      console.log("pubKey", pubKey)
 
       return res.status(201).json({
         _id: user._id,
         fullName: user.fullName,
         email: user.email,
         profilePic: user.profilePic,
-        publicKey: pubKey
+        publicKey: pubKey,
+        token: jwt
       });
     }
 
@@ -39,7 +38,7 @@ export const googleSignInUp = async (req, res) => {
 
     if (newUser) {
       // generate jwt token here
-      generateToken(newUser._id, res);
+      const jwt = generateToken(newUser._id, res);
 
       // save public key on s3
       await uploadPublicKey(newUser._id, publicKey);
@@ -50,7 +49,8 @@ export const googleSignInUp = async (req, res) => {
         fullName: newUser.fullName,
         email: newUser.email,
         profilePic: newUser.profilePic,
-        publicKey
+        publicKey,
+        token: jwt
       });
     } else {
       res.status(400).json({ message: "Invalid user data" });
