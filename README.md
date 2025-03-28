@@ -1,4 +1,4 @@
-# Frontend Chat App
+# Backend Chat App
 
 A secure real-time chat application built using the **MERN** stack with **OAuth authentication** and **end-to-end encryption**.
 
